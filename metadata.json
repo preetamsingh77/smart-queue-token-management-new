@@ -1,0 +1,7 @@
+{
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "name": "CivicFlow: Smart Queue Management System",
+  "description": ""
+}

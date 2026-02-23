@@ -1,0 +1,21 @@
+{
+    "name": "civicflow-admin-server",
+    "version": "1.0.0",
+    "description": "Firebase Admin SDK scripts for CivicFlow queue management",
+    "type": "commonjs",
+    "scripts": {
+        "start": "node index.js",
+        "set-role": "node setUserRole.js",
+        "seed": "node seedFirestore.js",
+        "seed:mongo": "node seedMongo.js",
+        "list-users": "node listUsers.js"
+    },
+    "dependencies": {
+        "cors": "^2.8.6",
+        "dotenv": "^17.3.1",
+        "express": "^5.2.1",
+        "mongodb-memory-server": "^11.0.1",
+        "mongoose": "^9.2.1",
+        "socket.io": "^4.8.3"
+    }
+}

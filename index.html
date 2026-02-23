@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Smart Queue & Token Management System – Official Government Portal. Book your token, track queue status, and get served faster at government offices.">
+  <meta name="keywords"
+    content="government queue management, token booking, citizen portal, smart queue, government services India">
+  <meta property="og:title" content="Smart Queue & Token Management System | Government of India">
+  <meta property="og:description"
+    content="Book tokens, track queue position, and access government services online. Official Smart Queue Portal.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smart Queue & Token Management System | Government of India">
+  <meta name="twitter:description"
+    content="Official government smart queue portal. Book and track your service token online.">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <title>Smart Queue & Token Management System | Government of India</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <script>
+    // Configure Tailwind to use class-based dark mode
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+
+    // Prevent flash of light mode
+    (function () {
+      try {
+        const theme = localStorage.getItem('civicflow-theme');
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (theme === 'dark' || (theme === null && supportDarkMode)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        // Restore high-contrast mode
+        if (localStorage.getItem('civicflow-contrast') === 'high') {
+          document.documentElement.classList.add('high-contrast');
+        }
+      } catch (e) { }
+    })();
+  </script>
+</head>
+
+<body class="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+  <div id="root"></div>
+  <script type="module" src="/src/index.tsx"></script>
+</body>
+
+</html>
