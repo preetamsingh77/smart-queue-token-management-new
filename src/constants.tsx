@@ -6,6 +6,39 @@ import {
 
 export const DEFAULT_SERVICES = [
   {
+    id: 'aadhaar',
+    name: 'Aadhaar & Identity',
+    description: 'Aadhaar enrollment, updates, and identity verification.',
+    icon: 'Fingerprint',
+    color: '#3b82f6',
+    prefix: 'I',
+    avgTimeMinutes: 15,
+    isActive: true,
+    subServices: ['New Enrollment', 'Address Update', 'Biometric Update', 'Phone Number Link']
+  },
+  {
+    id: 'revenue',
+    name: 'Revenue & Land',
+    description: 'Property registration, land records, and revenue collection.',
+    icon: 'Home',
+    color: '#8b5cf6',
+    prefix: 'R',
+    avgTimeMinutes: 30,
+    isActive: true,
+    subServices: ['Property Registration', 'Land Records', 'Mutation of Property', 'Revenue Tax']
+  },
+  {
+    id: 'vehicle',
+    name: 'Vehicle & Transport',
+    description: 'Driving licensing, vehicle registration, and permits.',
+    icon: 'Car',
+    color: '#f97316',
+    prefix: 'V',
+    avgTimeMinutes: 20,
+    isActive: true,
+    subServices: ['New Driving License', 'License Renewal', 'Vehicle Registration', 'Transfer of Ownership']
+  },
+  {
     id: 'cert',
     name: 'Certificate Services',
     description: 'Birth, death, marriage, and institutional certifications.',
@@ -15,6 +48,39 @@ export const DEFAULT_SERVICES = [
     avgTimeMinutes: 15,
     isActive: true,
     subServices: ['Birth Certificate', 'Death Certificate', 'Marriage Certificate', 'Caste Certificate', 'Income Certificate']
+  },
+  {
+    id: 'health',
+    name: 'Health & Sanitation',
+    description: 'Medical assistance, sanitation requests, and health schemes.',
+    icon: 'Activity',
+    color: '#ec4899',
+    prefix: 'H',
+    avgTimeMinutes: 25,
+    isActive: true,
+    subServices: ['Health Card Issuance', 'Medical Relief Scheme', 'Sanitation Complaint', 'Hospital Allocation']
+  },
+  {
+    id: 'pension',
+    name: 'Pension & Welfare',
+    description: 'Senior citizen pension, widow pension, and welfare.',
+    icon: 'Heart',
+    color: '#14b8a6',
+    prefix: 'P',
+    avgTimeMinutes: 10,
+    isActive: true,
+    subServices: ['Senior Citizen Pension', 'Widow Pension', 'Disability Welfare', 'Verification Check']
+  },
+  {
+    id: 'education',
+    name: 'Education & Grants',
+    description: 'Scholarships, school admissions, and educational grants.',
+    icon: 'GraduationCap',
+    color: '#a855f7',
+    prefix: 'E',
+    avgTimeMinutes: 15,
+    isActive: true,
+    subServices: ['Scholarship Application', 'School Transfer Cert', 'Grant Disbursement', 'Exam Form Submission']
   },
   {
     id: 'bill',
@@ -51,7 +117,7 @@ export const DEFAULT_SERVICES = [
   },
   {
     id: 'legal',
-    name: 'Administrative / Signature',
+    name: 'Administrative',
     description: 'Notarization, affidavits, and official stamp duty.',
     icon: 'Landmark',
     color: '#0f766e',
@@ -59,7 +125,7 @@ export const DEFAULT_SERVICES = [
     avgTimeMinutes: 10,
     isActive: true,
     subServices: ['Document Notarization', 'Affidavit Attestation', 'Stamp Duty Payment', 'Signature Verification', 'Certified Copies']
-  },
+  }
 ];
 
 export const getIcon = (name: string, className?: string) => {
