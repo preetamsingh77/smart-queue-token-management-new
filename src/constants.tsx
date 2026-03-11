@@ -134,10 +134,10 @@ export const getIcon = (name: string, className?: string) => {
 };
 
 export const INITIAL_COUNTERS = [
-  { id: 1, officerName: 'John Doe', name: 'Registry Desk 1', status: 'ONLINE', isOnline: true, assignedServices: ['Certificate Services'] },
-  { id: 2, officerName: 'Jane Smith', name: 'Payment Window 2', status: 'ONLINE', isOnline: true, assignedServices: ['Bill Payments'] },
-  { id: 3, officerName: 'Robert Wilson', name: 'Documentation Desk 3', status: 'ONLINE', isOnline: true, assignedServices: ['Grievance & Complaints'] },
-  { id: 4, officerName: 'Maria Garcia', name: 'Applications & Approvals 4', status: 'ONLINE', isOnline: true, assignedServices: ['Applications & Approvals'] },
+  { id: 1, officerName: 'John Doe', name: 'Registry Desk 1', status: 'ONLINE', isOnline: true, assignedServices: ['Certificate Services', 'Aadhaar & Identity', 'Pension & Welfare'] },
+  { id: 2, officerName: 'Jane Smith', name: 'Payment Window 2', status: 'ONLINE', isOnline: true, assignedServices: ['Bill Payments', 'Revenue & Land', 'Vehicle & Transport'] },
+  { id: 3, officerName: 'Robert Wilson', name: 'Documentation Desk 3', status: 'ONLINE', isOnline: true, assignedServices: ['Grievance & Complaints', 'Health & Sanitation', 'Education & Grants'] },
+  { id: 4, officerName: 'Maria Garcia', name: 'Applications & Approvals 4', status: 'ONLINE', isOnline: true, assignedServices: ['Applications & Approvals', 'Administrative'] },
 ];
 
 export const NAV_ITEMS = [
