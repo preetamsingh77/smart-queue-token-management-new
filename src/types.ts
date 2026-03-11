@@ -71,6 +71,7 @@ export interface Token {
   serviceType: string; // Alias for serviceCategory or specific subservice
   citizenName: string;
   phone?: string;
+  dob?: string;
   status: TokenStatus;
   priorityLevel: 'NORMAL' | 'SENIOR' | 'EMERGENCY';
   priorityStatus: PriorityStatus;

@@ -122,7 +122,10 @@ export function useUpdateTokenStatus() {
             if (IS_MOCK) return { id, status, counterId };
             const updates: any = { status };
             if (status === 'CALLED') updates.called_at = new Date();
-            if (status === 'IN_PROGRESS') updates.started_at = new Date();
+            if (status === 'IN_PROGRESS') {
+                updates.started_at = new Date();
+                updates.service_start_time = Date.now();
+            }
             if (status === 'COMPLETED') updates.completed_at = new Date();
             if (counterId !== undefined) updates.counter_id = counterId;
 

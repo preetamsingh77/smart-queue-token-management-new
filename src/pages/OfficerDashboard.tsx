@@ -55,23 +55,7 @@ const playWakeUpChime = async () => {
 };
 
 
-function getVoices(): Promise<SpeechSynthesisVoice[]> {
-    return new Promise((resolve) => {
-        let voices = window.speechSynthesis.getVoices();
-        if (voices.length !== 0) {
-            voicesCache = voices;
-            resolve(voices);
-            return;
-        }
-        window.speechSynthesis.onvoiceschanged = () => {
-            voices = window.speechSynthesis.getVoices();
-            voicesCache = voices;
-            resolve(voices);
-        };
-    });
-}
-
-async function speak(text: string, lang: string = 'en-IN') {
+function speak(text: string, lang: string = 'en-IN') {
     if (!('speechSynthesis' in window)) return;
 
     // 1. Clear previous speech and ensure engine is ready
@@ -80,11 +64,13 @@ async function speak(text: string, lang: string = 'en-IN') {
         window.speechSynthesis.resume();
     }
 
-    // 2. Force Audio Context Wake-up (Wait for chime to finish)
-    await playWakeUpChime();
+    // 2. Play Audio Context Wake-up chime asynchronously
+    playWakeUpChime();
 
-    // Ensure voices are loaded
-    const voices = voicesCache.length > 0 ? voicesCache : await getVoices();
+    // Ensure voices are loaded synchronously
+    let voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) voices = voicesCache; // Fallback to cache if empty
+    else voicesCache = voices;
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
@@ -100,10 +86,10 @@ async function speak(text: string, lang: string = 'en-IN') {
 
     if (preferred) utterance.voice = preferred;
 
-    // 3. Trigger speech with a small stable delay
+    // 3. Trigger speech with slight delay (fixes Chrome cancel() bug)
     setTimeout(() => {
         window.speechSynthesis.speak(utterance);
-    }, 150);
+    }, 250);
 }
 
 function buildAnnouncement(token: Token, counterName: string): string {
@@ -226,12 +212,12 @@ const OfficerDashboard: React.FC = () => {
         showToast("Audio Engine Synchronized", "success");
     };
 
-    const handleTestAudio = async () => {
+    const handleTestAudio = () => {
         if (!audioEnabled) {
             showToast("Enable Audio First", "warning");
             return;
         }
-        await speak("Audio system test. Protocol established and operating within nominal parameters.");
+        speak("Audio system test. Protocol established and operating within nominal parameters.");
         showToast("Test Transmission Sent", "info");
     };
 
@@ -288,6 +274,12 @@ const OfficerDashboard: React.FC = () => {
 
         setIsCalling(true);
         try {
+            if (audioEnabled && 'speechSynthesis' in window) {
+                const s = new SpeechSynthesisUtterance('');
+                s.volume = 0;
+                window.speechSynthesis.speak(s);
+                window.speechSynthesis.resume(); // Refresh user gesture context
+            }
             const success = await serveToken(tokenId, selectedCounterId);
             if (success) {
                 setRecentlyCalledId(tokenId);
@@ -309,6 +301,12 @@ const OfficerDashboard: React.FC = () => {
         if (!selectedCounterId) return;
         setIsCalling(true);
         try {
+            if (audioEnabled && 'speechSynthesis' in window) {
+                const s = new SpeechSynthesisUtterance('');
+                s.volume = 0;
+                window.speechSynthesis.speak(s);
+                window.speechSynthesis.resume(); // Refresh user gesture context immediately
+            }
             const token = await callNext(selectedCounterId);
             if (token) {
                 setRecentlyCalledId(token.id);

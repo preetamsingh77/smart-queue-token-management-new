@@ -15,6 +15,7 @@ const TokenSchema = new Schema({
     id: { type: String, required: true, unique: true },
     citizen_name: String,
     phone: String,
+    dob: String,
     service_id: String,
     service_category: String,
     service_type: String,

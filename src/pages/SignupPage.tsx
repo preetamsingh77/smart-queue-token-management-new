@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { UserPlus, Mail, Lock, User, Loader2, ShieldCheck } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, Loader2, ShieldCheck, ChevronDown } from 'lucide-react';
 import { InstitutionalBranding } from '../components/SharedUI';
 import { useToast } from '../context/ToastContext';
 
@@ -16,6 +16,7 @@ const SignupPage: React.FC = () => {
     const [selectedRole, setSelectedRole] = useState<'CITIZEN' | 'OFFICER' | 'ADMIN'>(
         (roleParam === 'OFFICER' || roleParam === 'ADMIN' || roleParam === 'CITIZEN') ? roleParam : 'CITIZEN'
     );
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { user, signUpWithEmailPassword, signInWithGoogle, updateRole } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
@@ -82,23 +83,50 @@ const SignupPage: React.FC = () => {
                         <label className="block text-[10px] font-black uppercase tracking-[0.25em] text-[#c8a227] ml-1">
                             Select Workspace Level
                         </label>
-                        <div className="grid grid-cols-1 gap-2">
-                            {(['CITIZEN', 'OFFICER', 'ADMIN'] as const).map((role) => (
-                                <button
-                                    key={role}
-                                    type="button"
-                                    onClick={() => setSelectedRole(role)}
-                                    className={`relative flex items-center justify-between px-6 py-4 rounded-2xl border-2 transition-all duration-300 ${selectedRole === role ? 'bg-[#1e3a6e] border-[#1e3a6e] text-white shadow-xl scale-[1.02]' : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-800 text-slate-400 hover:border-[#1e3a6e]/30'}`}
-                                >
-                                    <div className="flex flex-col items-start">
-                                        <span className="font-black text-[10px] uppercase tracking-widest">{role}</span>
-                                        <span className="text-[8px] font-medium opacity-60 uppercase tracking-tighter mt-0.5">
-                                            {role === 'CITIZEN' ? 'Public access for token management' : role === 'OFFICER' ? 'Station personnel & queue triage' : 'Command center & system config'}
-                                        </span>
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                className="w-full relative flex items-center justify-between px-6 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 rounded-2xl hover:border-[#1e3a6e]/30 focus:border-[#1e3a6e] focus:outline-none transition-all"
+                            >
+                                <div className="flex flex-col items-start">
+                                    <span className="font-black text-[10px] uppercase tracking-widest text-[#1e3a6e] dark:text-blue-400">{selectedRole}</span>
+                                    <span className="text-[8px] font-medium opacity-60 uppercase tracking-tighter mt-0.5 text-slate-500">
+                                        {selectedRole === 'CITIZEN' ? 'Public access for token management' : selectedRole === 'OFFICER' ? 'Station personnel & queue triage' : 'Command center & system config'}
+                                    </span>
+                                </div>
+                                <ChevronDown size={16} className={`text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            {isDropdownOpen && (
+                                <>
+                                    <div
+                                        className="fixed inset-0 z-40"
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    />
+                                    <div className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+                                        {(['CITIZEN', 'OFFICER', 'ADMIN'] as const).map((role) => (
+                                            <button
+                                                key={role}
+                                                type="button"
+                                                onClick={() => {
+                                                    setSelectedRole(role);
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                                className={`w-full flex items-center justify-between px-6 py-4 transition-all hover:bg-slate-50 dark:hover:bg-slate-800 border-b border-slate-100 dark:border-slate-800 last:border-0 ${selectedRole === role ? 'bg-[#1e3a6e]/5 dark:bg-[#1e3a6e]/20' : ''}`}
+                                            >
+                                                <div className="flex flex-col items-start">
+                                                    <span className={`font-black text-[10px] uppercase tracking-widest ${selectedRole === role ? 'text-[#1e3a6e] dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'}`}>{role}</span>
+                                                    <span className="text-[8px] font-medium opacity-60 uppercase tracking-tighter mt-0.5 text-slate-500">
+                                                        {role === 'CITIZEN' ? 'Public access for token management' : role === 'OFFICER' ? 'Station personnel & queue triage' : 'Command center & system config'}
+                                                    </span>
+                                                </div>
+                                                {selectedRole === role && <ShieldCheck size={16} className="text-[#c8a227]" />}
+                                            </button>
+                                        ))}
                                     </div>
-                                    {selectedRole === role && <ShieldCheck size={16} className="text-[#c8a227]" />}
-                                </button>
-                            ))}
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

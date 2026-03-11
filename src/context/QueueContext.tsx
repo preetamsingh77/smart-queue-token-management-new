@@ -233,6 +233,7 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const newToken: Token = {
       id: localId,
       citizenName: params.name,
+      dob: params.dob,
       phone: params.contact?.phone,
       serviceId: params.service,
       serviceCategory: serviceName,

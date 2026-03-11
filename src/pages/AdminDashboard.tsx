@@ -13,7 +13,10 @@ import {
   RotateCcw,
   X,
   Plus,
-  Grid
+  Grid,
+  Flame,
+  User,
+  ChevronRight
 } from 'lucide-react';
 import { InstitutionalBranding } from '../components/SharedUI';
 import {
@@ -188,7 +191,7 @@ const AdminDashboard: React.FC = () => {
     { id: 'TELEMETRY', label: 'Telemetry', icon: <Activity size={18} /> },
     { id: 'FLEET', label: 'Fleet Registry', icon: <Monitor size={18} /> },
     { id: 'SERVICES', label: 'Infrastructure', icon: <Grid size={18} /> },
-    { id: 'AUDIT', label: 'Verification Hub', icon: <ShieldCheck size={18} />, badge: pendingVerifications.length > 0 ? pendingVerifications.length : undefined },
+    { id: 'AUDIT', label: 'Priority Verification Bureau', icon: <ShieldCheck size={18} />, badge: pendingVerifications.length > 0 ? pendingVerifications.length : undefined },
     { id: 'SKIPPED', label: 'Deferred Registry', icon: <RotateCcw size={18} /> }
   ];
 
@@ -228,12 +231,37 @@ const AdminDashboard: React.FC = () => {
       <main>
         {activeTab === 'TELEMETRY' && (
           <div className="space-y-12 animate-in fade-in duration-700">
+            {pendingVerifications.length > 0 && (
+              <button
+                onClick={() => setActiveTab('AUDIT')}
+                className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white p-8 rounded-[3rem] border-4 border-rose-500/50 shadow-[0_20px_50px_rgba(225,29,72,0.4)] flex flex-col md:flex-row items-center justify-between gap-6 hover:scale-[1.01] active:scale-95 transition-all group overflow-hidden relative"
+              >
+                <div className="absolute top-0 right-0 p-8 opacity-10 scale-150 rotate-12 transition-transform group-hover:rotate-45 duration-700 pointer-events-none">
+                  <ShieldAlert size={200} />
+                </div>
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-20 h-20 bg-white/20 rounded-[2rem] flex items-center justify-center animate-pulse border-2 border-white/30 backdrop-blur-md">
+                    <ShieldAlert size={40} className="text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-3xl font-black uppercase italic tracking-tighter leading-none mb-1">Priority Verification Bureau</h3>
+                    <p className="text-[12px] font-black uppercase tracking-[0.3em] text-rose-200">
+                      Action Required: {pendingVerifications.length} {pendingVerifications.length === 1 ? 'Token awaits' : 'Tokens await'} document audit
+                    </p>
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center gap-4 px-8 py-4 bg-white text-rose-600 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-xl relative z-10">
+                  Review Claims <ChevronRight size={16} className="group-hover:translate-x-2 transition-transform" />
+                </div>
+              </button>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
               {[
                 { label: 'Issued Today', value: operationalMetrics.totalIssued, icon: <PlusCircle size={24} />, primary: true },
                 { label: 'Served Enrolments', value: operationalMetrics.servedCount, icon: <CheckCircle size={24} /> },
                 { label: 'Skipped Units', value: operationalMetrics.skippedCount, icon: <UserX size={24} />, warning: true },
-                { label: 'Pending Verif.', value: pendingVerifications.length, icon: <ShieldAlert size={24} />, danger: pendingVerifications.length > 0 },
+                { label: 'Priority Verification Bureau', value: pendingVerifications.length, icon: <ShieldAlert size={24} />, danger: pendingVerifications.length > 0 },
                 { label: 'Avg Wait Delta', value: operationalMetrics.avgServiceTime, icon: <Zap size={24} />, unit: 'M' }
               ].map((v, i) => (
                 <div key={i} onClick={() => v.danger && setActiveTab('AUDIT')} className={`bg-white dark:bg-slate-900 p-10 rounded-[3rem] border-2 transition-all shadow-xl relative group overflow-hidden ${v.danger ? 'cursor-pointer hover:border-rose-500/60' : ''} ${v.warning ? 'border-amber-500/30' : v.danger ? 'border-rose-500/30' : v.primary ? 'border-[#1e3a6e]/10' : 'border-slate-100 dark:border-white/5'}`}>
@@ -445,7 +473,7 @@ const AdminDashboard: React.FC = () => {
           <div className="space-y-12 animate-in slide-in-from-bottom duration-700">
             <div className="flex justify-between items-center px-4">
               <div>
-                <h2 className="text-4xl font-black uppercase italic tracking-tighter text-[#1e3a6e] dark:text-white">Credential Verification</h2>
+                <h2 className="text-4xl font-black uppercase italic tracking-tighter text-[#1e3a6e] dark:text-white">Priority Verification Bureau</h2>
                 <p className="text-[10px] font-black uppercase text-[#c8a227] tracking-[0.5em] mt-2 opacity-70">Strategic Document Audit & Priority Authorization</p>
               </div>
               <div className="flex items-center gap-4">
@@ -462,12 +490,10 @@ const AdminDashboard: React.FC = () => {
                   <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-2">Zero Active Claims in Pipeline</p>
                 </div>
               ) : pendingVerifications.map((token, idx) => (
-                <div key={token.id} className="group relative bg-[#020617] rounded-[3rem] p-10 border border-white/5 shadow-[0_50px_100px_rgba(0,0,0,0.6)] overflow-hidden">
-                  <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-500/5 to-transparent pointer-events-none" />
-
-                  <div className="flex flex-col lg:flex-row gap-12 relative z-10">
+                <div key={token.id} className="group relative bg-[#0f172a] rounded-[3rem] p-8 border border-white/5 shadow-[0_50px_100px_rgba(0,0,0,0.6)] overflow-hidden">
+                  <div className="flex flex-col lg:flex-row gap-8 relative z-10">
                     {/* Left: Document Section */}
-                    <div className="w-full lg:w-[400px] space-y-4">
+                    <div className="w-full lg:w-[350px] space-y-4">
                       <div className="flex gap-4 aspect-[3/4]">
                         {token.idProof && (
                           <div
@@ -516,26 +542,41 @@ const AdminDashboard: React.FC = () => {
                           </div>
 
                           <div className="flex items-center gap-3">
-                            <div className="px-6 py-3 bg-orange-950/30 border border-orange-500/30 rounded-2xl flex items-center gap-3">
-                              <Zap className="text-orange-500 w-4 h-4 fill-orange-500" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-orange-500">Super Priority</span>
-                            </div>
+                            {token.priorityLevel === 'EMERGENCY' || token.isEmergency ? (
+                              <div className="px-6 py-3 bg-rose-950/30 border border-rose-500/30 rounded-2xl flex items-center gap-3">
+                                <Flame className="text-rose-500 w-4 h-4 fill-rose-500" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-rose-500">Medical Emergency</span>
+                              </div>
+                            ) : token.priorityLevel === 'SENIOR' || token.isSenior ? (
+                              <div className="px-6 py-3 bg-amber-950/30 border border-amber-500/30 rounded-2xl flex items-center gap-3">
+                                <UserCheck className="text-amber-500 w-4 h-4" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">Senior Citizen</span>
+                              </div>
+                            ) : (
+                              <div className="px-6 py-3 bg-slate-800/50 border border-slate-600/30 rounded-2xl flex items-center gap-3">
+                                <User className="text-slate-400 w-4 h-4" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Standard</span>
+                              </div>
+                            )}
                             <div className="px-6 py-3 bg-blue-950/30 border border-blue-500/30 rounded-2xl flex items-center gap-3">
                               <Activity className="text-blue-500 w-4 h-4" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-blue-500">{token.medicalProof ? 'Medical' : 'Identity'} Claim</span>
+                              <span className="text-[10px] font-black uppercase tracking-widest text-blue-500">
+                                {token.medicalProof && token.idProof ? 'Medical + ID Proof' : token.medicalProof ? 'Medical Proof' : token.idProof ? 'ID Proof' : 'No Proof'}
+                              </span>
                             </div>
                           </div>
                         </div>
 
                         {/* Info Grid */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="flex flex-col lg:flex-row gap-4 w-full">
                           {[
                             { label: 'Wait Position', value: idx === 0 ? 'Direct Next' : `${idx + 1} Stacks Back`, highlight: 'text-emerald-400' },
                             { label: 'Register Time', value: new Date(token.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
                             { label: 'Dept Sector', value: token.serviceCategory.split(' ')[0].toUpperCase(), highlight: 'text-blue-400' },
-                            { label: 'Comms Status', value: 'Live Link', highlight: 'text-blue-400' }
+                            { label: 'Service Task', value: token.serviceType || 'General Task', highlight: 'text-[#c8a227]' }
                           ].map((item, i) => (
-                            <div key={i} className="bg-white/5 border border-white/5 p-6 rounded-3xl space-y-2">
+                            <div key={i} className="bg-[#0f172a] border border-white/5 p-6 rounded-2xl space-y-2 flex-1 relative overflow-hidden">
+                              <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                               <p className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-500 leading-none">{item.label}</p>
                               <p className={`text-sm font-black uppercase italic leading-none ${item.highlight || 'text-white'}`}>{item.value}</p>
                             </div>
@@ -544,15 +585,15 @@ const AdminDashboard: React.FC = () => {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-6 mt-12">
+                      <div className="flex gap-4 mt-8 w-full">
                         <button
                           onClick={async () => {
                             await approvePriority(token.id);
                             showToast(`Token #${token.number} Authenticated. Successfully moved to Waiting Queue.`, 'success');
                           }}
-                          className="flex-1 py-10 bg-emerald-600/20 hover:bg-emerald-600/30 border-2 border-emerald-500/40 text-emerald-400 rounded-full font-black text-sm uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-4 group"
+                          className="flex-1 py-4 bg-[#4c9c73] hover:bg-[#3d7c5b] text-white rounded-full font-black text-[12px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg active:scale-95 group"
                         >
-                          <CheckCircle className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                          <CheckCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                           Authenticate Claim
                         </button>
                         <button
@@ -560,9 +601,9 @@ const AdminDashboard: React.FC = () => {
                             const reason = window.prompt("Enter denial reason:", "Documentation audit failed.");
                             if (reason) rejectPriority(token.id, reason);
                           }}
-                          className="flex-1 py-10 bg-rose-600/20 hover:bg-rose-600/30 border-2 border-rose-500/40 text-rose-400 rounded-full font-black text-sm uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-4 group"
+                          className="flex-1 py-4 bg-[#c53a47] hover:bg-[#9d2e38] text-white rounded-full font-black text-[12px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg active:scale-95 group"
                         >
-                          <ShieldAlert className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                          <ShieldAlert className="w-5 h-5 group-hover:scale-110 transition-transform" />
                           Deny Access
                         </button>
                       </div>

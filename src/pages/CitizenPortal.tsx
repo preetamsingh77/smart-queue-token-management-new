@@ -168,15 +168,12 @@ const CitizenPortal: React.FC = () => {
   };
 
   const handleBook = async () => {
-    if (!name.trim() || !selectedService || !selectedMainService || !dob.trim() || dob.length !== 10) {
-      showToast("Missing Information: Name, Date of Birth, and Service are required.", "warning");
+    if (!name.trim() || !selectedService || !selectedMainService || !dob.trim() || dob.length !== 10 || !phone.trim() || validatePhone(phone)) {
+      showToast("Missing Information: Name, valid Phone Number, Date of Birth, and Service are required.", "warning");
+      if (validatePhone(phone)) setPhoneError(validatePhone(phone));
       return;
     }
 
-    if (prefSms) {
-      const pErr = validatePhone(phone);
-      if (pErr) { setPhoneError(pErr); return; }
-    }
     if (prefEmail) {
       const eErr = validateEmail(email);
       if (eErr) { setEmailError(eErr); return; }
@@ -195,7 +192,7 @@ const CitizenPortal: React.FC = () => {
         idProof: (isAutoSenior || isSenior) ? (idProof || undefined) : undefined,
         medicalProof: isMedicalEmergency ? (medicalProof || undefined) : undefined,
         contact: {
-          phone: prefSms ? phone : undefined,
+          phone: phone,
           email: prefEmail ? email : undefined,
           prefs: { sms: prefSms, email: prefEmail }
         }
@@ -517,7 +514,7 @@ const CitizenPortal: React.FC = () => {
 
             <div className="space-y-8">
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Full Name (Legal ID)</label>
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1 flex items-center gap-1">Full Name (Legal ID) <span className="text-rose-500 text-lg leading-none">*</span></label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="E.g. Rajesh Kumar" className="w-full bg-slate-50 dark:bg-black/20 border-2 border-slate-100 dark:border-white/5 focus:border-[#1e3a6e] rounded-2xl p-6 font-black text-slate-900 dark:text-white outline-none transition-all" />
               </div>
 
@@ -534,7 +531,7 @@ const CitizenPortal: React.FC = () => {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Date of Birth</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1 flex items-center gap-1">Date of Birth <span className="text-rose-500 text-lg leading-none">*</span></label>
                   <div className="flex gap-2">
                     <select
                       value={dob.split('-')[2] || ''}
@@ -589,17 +586,23 @@ const CitizenPortal: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className={`space-y-3 transition-opacity ${prefSms ? 'opacity-100' : 'opacity-20'}`}>
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Mobile String (+91)</label>
+                <div className={`space-y-3 transition-opacity opacity-100`}>
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1 flex items-center gap-1">Mobile String (+91) <span className="text-rose-500 text-lg leading-none">*</span></label>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => {
                       const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                       setPhone(val);
-                      if (val.length === 10) setPhoneError(null);
+                      if (val.length > 0 && val.length < 10) {
+                        setPhoneError("Phone number must be exactly 10 digits.");
+                      } else {
+                        setPhoneError(null);
+                      }
                     }}
-                    disabled={!prefSms}
+                    onBlur={() => {
+                      if (phone.length > 0 && phone.length < 10) setPhoneError("Phone number must be exactly 10 digits.");
+                    }}
                     placeholder="9876543210"
                     className={`w-full bg-slate-50 dark:bg-black/20 border-2 ${phoneError ? 'border-rose-500' : 'border-slate-100 dark:border-white/5'} focus:border-[#1e3a6e] rounded-2xl p-4 font-black text-slate-900 dark:text-white outline-none`}
                   />
@@ -622,7 +625,7 @@ const CitizenPortal: React.FC = () => {
                 </div>
               </div>
 
-              <button disabled={!name} onClick={() => setBookingSubStep('SERVICE')} className="w-full bg-[#1e3a6e] hover:bg-[#0d2550] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl active:scale-95 disabled:opacity-30 transition-all flex items-center justify-center gap-4 group/btn">
+              <button disabled={!name || !dob || dob.length !== 10 || !phone || phone.length !== 10 || !!phoneError} onClick={() => setBookingSubStep('SERVICE')} className="w-full bg-[#1e3a6e] hover:bg-[#0d2550] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl active:scale-95 disabled:opacity-50 disabled:bg-slate-400 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-4 group/btn">
                 Continue To Department Selection <ChevronRight size={20} className="group-hover:translate-x-1" />
               </button>
             </div>
@@ -749,7 +752,7 @@ const CitizenPortal: React.FC = () => {
 
               {(isSenior || isAutoSenior) && (
                 <div className="p-6 bg-[#c8a227]/5 rounded-2xl border-2 border-dashed border-[#c8a227]/20 flex flex-col items-center justify-center text-center gap-3 relative group">
-                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'ID')} className="absolute inset-0 opacity-0 cursor-pointer" />
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'ID')} className="absolute inset-0 w-full h-full z-10 opacity-0 cursor-pointer" title="Upload ID Proof" />
                   {idProof ? <ShieldCheck className="text-[#c8a227]" size={32} /> : <Upload className="text-slate-300" size={32} />}
                   <div className="space-y-1">
                     <p className="text-[10px] font-black uppercase tracking-widest text-[#1e3a6e]">{idProof ? 'Government ID Latched' : 'Upload Government ID (Aadhaar/PAN)'}</p>
@@ -759,8 +762,8 @@ const CitizenPortal: React.FC = () => {
               )}
 
               {isMedicalEmergency && (
-                <div className="p-6 bg-rose-50 dark:bg-slate-800 rounded-2xl border-2 border-dashed border-rose-200 flex flex-col items-center justify-center text-center gap-3 relative group">
-                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'MEDICAL')} className="absolute inset-0 opacity-0 cursor-pointer" />
+                <div className="p-6 bg-rose-50 dark:bg-slate-800 rounded-2xl border-2 border-dashed border-rose-200 flex flex-col items-center justify-center text-center gap-3 relative group overflow-hidden">
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'MEDICAL')} className="absolute inset-0 w-full h-full z-10 opacity-0 cursor-pointer" title="Upload Medical Proof" />
                   {medicalProof ? <CheckCircle2 className="text-rose-500" size={32} /> : <Upload className="text-slate-300" size={32} />}
                   <p className="text-[10px] font-black uppercase tracking-widest text-rose-500">{medicalProof ? 'Medical Evidence Received' : 'Upload Medical Emergency Proof'}</p>
                 </div>
